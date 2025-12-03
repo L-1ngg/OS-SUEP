@@ -1,0 +1,339 @@
+/* ==========================================================================
+   全局布局设置 (Global Layout)
+   ========================================================================== */
+
+/* Screen 是整个应用的最外层容器 */
+Screen {
+    /* 使用网格布局 (Grid Layout) */
+    layout: grid;
+    
+    /* 定义网格大小：2列 x 2行 */
+    grid-size: 2 2;
+    
+    /* 定义列宽比例：左边占 2份 (2fr)，右边占 1份 (1fr) */
+    grid-columns: 2fr 1fr;
+    
+    /* 定义行高：
+       - 第一行 (控制区+统计区) 高度根据内容自动适应 (auto)
+       - 第二行 (图表+内存区) 占满剩余空间 (1fr) 
+    */
+    grid-rows: auto 1fr;
+    
+    /* 全局背景色：深邃的午夜蓝 */
+    background: #11111b; 
+    
+    /* 左右留出 1 个字符的内边距，防止内容贴边 */
+    padding: 0 1;
+}
+
+/* ==========================================================================
+   自定义标题栏 (Custom Header)
+   ========================================================================== */
+
+.app-title {
+    /* dock: top 让它固定停靠在屏幕最顶端，不参与 Grid 布局 */
+    dock: top;
+    width: 100%;
+    height: 1; /* 高度 1 行 */
+    
+    background: #11111b; /* 与背景同色，融为一体 */
+    color: #585b70;      /* 低调的灰色文字 */
+    
+    /* 文字水平居中，垂直居中 */
+    text-align: center;
+    content-align: center middle;
+    
+    text-style: bold; /* 加粗 */
+    margin-bottom: 1; /* 底部留空一行 */
+}
+
+/* ==========================================================================
+   1. 左上角：统计数据区 (Stats Panel)
+   ========================================================================== */
+
+#stats-panel {
+    /* 使用网格布局：4列 x 1行，横向排列 4 个算法卡片 */
+    layout: grid;
+    grid-size: 4 1;
+    
+    background: #1e1e2e; /* 卡片背景色 */
+    
+    /* 圆角边框，颜色为淡蓝色 */
+    border: round #89b4fa; 
+    
+    margin-right: 1;  /*这也是为了给右边的控制区留点空隙*/
+    margin-bottom: 1; /* 底部间距 */
+    padding: 0;
+    
+    /* 固定高度，保证界面整齐 */
+    height: 10;
+}
+
+/* 单个算法统计卡片 */
+AlgoStatCard { 
+    align: center middle; 
+    
+    /* 右边框：用于分隔卡片 */
+    border-right: solid #313244; 
+    height: 100%;
+    
+    /* 内部组件垂直排列 (标题在上，数据在下) */
+    layout: vertical;
+}
+
+/* 最后一个卡片去掉右边框，否则最右边会有双重边框 */
+AlgoStatCard:last-of-type { 
+    border-right: none; 
+}
+
+/* 当前被选中的算法卡片样式 (高亮) */
+.card-active { 
+    background: #313244; /* 背景变亮 */
+    color: #fff;         /* 文字变白 */
+    text-style: bold; 
+}
+
+/* 卡片内部元素的样式 */
+.card-title { 
+    color: #a6adc8;      /* 浅灰色标题 */
+    padding-top: 1;      /* 顶部留空 */
+}
+
+.card-rate { 
+    color: #89b4fa;      /* 缺页率数字颜色 (蓝色) */
+    text-style: bold; 
+    padding: 1 0;        /* 上下留空 */
+} 
+
+.card-wb { 
+    color: #f9e2af;      /* 写回计数颜色 (黄色) */
+    text-style: italic;  /* 斜体 */
+} 
+
+.card-status { 
+    color: #bac2de;      /* 状态文字 (Hit/Miss) */
+    padding-bottom: 1; 
+}
+
+/* 动态状态颜色：缺页显示红色，命中显示绿色 */
+.status-miss { color: #f38ba8; } 
+.status-hit { color: #a6e3a1; }  
+
+/* ==========================================================================
+   2. 右上角：控制面板 (Controls Panel)
+   ========================================================================== */
+
+#controls-panel {
+    background: #1e1e2e;
+    border: round #89b4fa;
+    align: center middle;
+    padding: 0 1;
+    
+    /* 垂直排列内部控件 */
+    layout: vertical;
+    margin-bottom: 1;
+}
+
+/* 设置行：标签和输入框横向排列 */
+#setting-row {
+    layout: horizontal;
+    height: 3;
+    align: center middle;
+    margin-top: 1;
+}
+
+/* 内存大小输入框 */
+#input-size {
+    width: 8;            /* 宽度 8 个字符 */
+    background: #181825; /* 深色背景 */
+    border: none;        /* 去掉默认边框，更扁平化 */
+    text-align: center;
+    margin-left: 1;
+    color: #cdd6f4;
+}
+
+/* 算法选择按钮容器 */
+#algo-buttons {
+    layout: horizontal;
+    height: 3;
+    align: center middle;
+    margin: 1 0; /* 上下各留 1 行间距 */
+}
+
+/* 算法按钮通用样式 */
+#algo-buttons Button { 
+    min-width: 5; 
+    margin: 0 1; 
+    border: none; 
+    background: #313244; /* 默认暗色 */
+} 
+
+/* 选中的算法按钮样式 (在 Python 代码中通过 add_class 添加) */
+#algo-buttons Button.-active { 
+    background: #89b4fa; /* 激活变为蓝色 */
+    color: #11111b;      /* 文字变深色以增加对比度 */
+}
+
+/* 底部操作按钮容器 (START 和 BELADY) */
+.action-row {
+    layout: horizontal;
+    height: 3;
+    width: 100%;
+    align: center middle;
+    margin-top: 1;
+    margin-bottom: 1;
+}
+
+/* 开始按钮 */
+#btn-start { 
+    width: 60%; 
+    border: none; 
+    background: #a6e3a1; /* 绿色 */
+    color: #11111b; 
+    text-style: bold; 
+    margin-right: 1;
+}
+
+/* 开始按钮在暂停状态下的样式 */
+#btn-start.pause { 
+    background: #f9e2af; /* 变为黄色 */
+    color: #11111b; 
+}
+
+/* Belady 演示按钮 */
+#btn-belady { 
+    width: 35%; 
+    border: none; 
+    background: #f38ba8; /* 红色/粉色 */
+    color: #11111b; 
+    text-style: bold; 
+}
+
+/* ==========================================================================
+   3. 左下角：日志与图表区 (Log & Chart)
+   ========================================================================== */
+
+#log-panel {
+    background: #1e1e2e;
+    border: round #89b4fa;
+    margin-right: 1;
+    layout: vertical;
+}
+
+/* 图表容器 */
+#chart-container {
+    height: 2fr; /* 占据 2/3 的高度 */
+    padding: 0;
+    background: #181825; 
+    border-bottom: solid #313244; /* 底部加一条分隔线 */
+}
+
+/* 日志组件 */
+Log { 
+    height: 1fr; /* 占据 1/3 的高度 */
+    background: #1e1e2e; 
+    color: #cdd6f4; 
+    border: none;
+}
+
+/* ==========================================================================
+   4. 右下角：内存可视化区 (Memory View)
+   ========================================================================== */
+
+#memory-panel {
+    background: #1e1e2e;
+    border: round #89b4fa;
+    margin-top: 0;
+    
+    /* 关键：网格布局参数 */
+    layout: grid;
+    /* grid-size-columns 和 grid-size-rows 会在 Python 代码中
+       根据内存块数量动态修改，这里不需要写死 
+    */
+    
+    /* 网格间距：行间距 1，列间距 2 */
+    grid-gutter: 1 2; 
+    
+    /* 允许垂直滚动，当内存块很多时很有用 */
+    overflow-y: scroll;
+    
+    align: center top;
+    padding: 1;
+}
+
+/* 单个内存块卡片 */
+MemBlock { 
+    layout: vertical;
+    align: center middle;
+    
+    border: solid #45475a; /* 默认灰色边框 */
+    background: #181825;   /* 深色背景 */
+    
+    height: 6; /* 固定高度 */
+    padding: 0;
+}
+
+/* 内存块内部：左上角的索引号 (#0, #1...) */
+.mem-idx { 
+    width: 100%; 
+    text-align: left; 
+    color: #585b70; /* 暗灰色，低调 */
+    padding-left: 1; 
+}
+
+/* 内存块内部：中间的大页号 */
+.mem-page { 
+    width: 100%; 
+    text-align: center; 
+    color: #cdd6f4; /* 亮白色 */
+    text-style: bold; 
+    padding-bottom: 1; 
+}
+
+/* 内存块内部：底部的元数据 (Idle:5, Dirty...) */
+.mem-meta { 
+    width: 100%; 
+    text-align: center; 
+    color: #89b4fa;      /* 蓝色文字 */
+    background: #313244; /* 深色底条 */
+}
+
+/* --- 内存块的不同状态样式 --- */
+
+/* 1. 空闲状态 (Empty) */
+.block-empty { 
+    border: dashed #313244; /* 虚线边框 */
+    opacity: 50%;           /* 半透明 */
+}
+
+/* 2. 活跃状态 (Active) - 只有读操作 */
+.block-active { 
+    border: solid #89b4fa;  /* 蓝色实线边框 */
+}
+
+/* 3. 脏页状态 (Dirty) - 写操作过 */
+.block-dirty { 
+    border: solid #fab387;  /* 橙色边框 */
+}
+/* 脏页底部的标签也变橙色 */
+.block-dirty .mem-meta { 
+    background: #4a342e; 
+    color: #fab387; 
+}
+
+/* 4. 淘汰受害者 (Victim) - 即将被踢出 */
+.victim-frame { 
+    border: thick #f38ba8; /* 粗红框 */
+    background: #311b22;   /* 背景泛红 */
+}
+.victim-frame .mem-page { color: #f38ba8; }
+.victim-frame .mem-meta { background: #4a1c26; color: #f38ba8; }
+
+/* 5. 时钟指针 (Clock Hand) - Linux 算法专用 */
+.clock-hand-frame { 
+    border: thick #94e2d5; /* 青色粗框 */
+}
+.clock-hand-frame .mem-meta { 
+    background: #1d3b38; 
+    color: #94e2d5; 
+}

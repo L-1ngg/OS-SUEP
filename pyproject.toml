@@ -1,0 +1,11 @@
+[project]
+name = "os-suep"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "plotext>=5.3.2",
+    "textual>=6.7.1",
+    "textual-plotext>=1.0.1",
+]
