@@ -69,6 +69,7 @@ class MemSimApp(App):
         self.mem_block_refs = []
 
     def compose(self) -> ComposeResult:
+        
         yield Label("Virtual Memory Simulator: Dirty Bits & Belady Anomaly", classes="app-title")
         
         with Container(id="stats-panel"):
