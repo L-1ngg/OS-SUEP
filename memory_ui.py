@@ -200,7 +200,7 @@ class MemSimApp(App):
         if self.sim_running:
             btn.label = "PAUSE"
             btn.add_class("pause")
-            interval = 0.5 
+            interval = 0.01
             self.timer = self.set_interval(interval, self.step_simulation)
         else:
             btn.label = "RESUME"

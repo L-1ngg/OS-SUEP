@@ -139,7 +139,7 @@ class AlgoState:
 
 class PageManager:
     """总控制器：管理指令流和多算法状态"""
-    def __init__(self, total_instructions=320, total_pages=32, memory_blocks=4):
+    def __init__(self, total_instructions=2000, total_pages=32, memory_blocks=4):
         self.total_instructions = total_instructions
         self.memory_blocks = memory_blocks
         self.total_pages = total_pages
