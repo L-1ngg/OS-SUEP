@@ -9,9 +9,14 @@ from textual.events import Blur, Click  # 关键：引入 Click 事件
 # 导入逻辑层
 from memory_model import PageManager
 
-# ==========================================
-# 自定义组件 (Custom Widgets)
-# ==========================================
+SUEP_LOGO = r"""
+    ____  _   _ _____ ____  
+   / ___|| | | | ____|  _ \ 
+   \___ \| | | |  _| | |_) |
+    ___) | |_| | |___|  __/ 
+|____/ \___/|_____|_| 
+"""
+
 
 class SmartInput(Input):
     """
@@ -80,7 +85,6 @@ class MemSimApp(App):
         with Container(id="controls-panel"):
             with Container(id="setting-row"):
                 yield Label("RAM (1-10):")
-                # 使用自定义的 SmartInput
                 yield SmartInput(placeholder="4", value="4", type="integer", id="input-size")
             
             with Container(id="algo-buttons"):
@@ -95,6 +99,7 @@ class MemSimApp(App):
                 yield Button("BELADY", id="btn-belady", variant="error")
             
         with Container(id="log-panel"):
+            yield Label(SUEP_LOGO,classes="logo")
             with Container(id="chart-container"):
                 yield PlotextPlot(id="miss-chart-plot")
             yield RichLog(id="sys-log", markup=True, wrap=True)

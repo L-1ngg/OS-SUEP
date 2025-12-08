@@ -52,7 +52,6 @@ Screen {
    ========================================================================== */
 
 #stats-panel {
-    /* 使用网格布局：5列 x 1行，横向排列 4 个算法卡片 */
     layout: grid;
     grid-size: 5 1;
     
@@ -66,7 +65,7 @@ Screen {
     padding: 0;
     
     /* 固定高度，保证界面整齐 */
-    height: 10;
+    height: 20;
 }
 
 /* 单个算法统计卡片 */
@@ -134,12 +133,14 @@ AlgoStatCard:last-of-type {
     margin-bottom: 1;
 }
 
+
+
 /* 设置行：标签和输入框横向排列 */
 #setting-row {
     layout: horizontal;
     height: 3;
     align: center middle;
-    margin-top: 1;
+    margin-top: 0;
 }
 
 /* 内存大小输入框 */
@@ -219,6 +220,17 @@ AlgoStatCard:last-of-type {
     border: round #89b4fa;
     margin-right: 1;
     layout: vertical;
+}
+
+.logo {
+    width: 100%;
+    height:auto;
+    text-align:center;
+    color: #cba6f7;
+    text-style: bold;
+    background:#1e1e2e;
+    padding-top: 1;
+    padding-bottom: 2;  
 }
 
 /* 图表容器 */
