@@ -73,7 +73,7 @@ class MemSimApp(App):
 
     def compose(self) -> ComposeResult:
         
-        yield Label("Virtual Memory Simulator: Dirty Bits & Belady Anomaly", classes="app-title")
+        yield Label("Virtual Memory Simulator", classes="app-title")
         
         with Container(id="stats-panel"):
             yield AlgoStatCard("FIFO")
