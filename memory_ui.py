@@ -308,6 +308,17 @@ class MemSimApp(App):
             btn.remove_class("pause")
             if self.timer: self.timer.stop()
 
+    def action_reset(self):
+        """响应 'r' 键重置模拟"""
+        self._stop_simulation()
+        self.logic.reset()
+        self.reset_views()
+        #重置为了 FIFO
+        self.set_view_algorithm("FIFO")
+        for i, block in enumerate(self.mem_block_refs):
+            block.update_state(i, None, False, "FIFO")
+        self.query_one("#sys-log").write("[bold red]System Reset.[/]")
+    
     def _stop_simulation(self):
         """辅助方法：完全停止模拟并重置按钮"""
         self.sim_running = False
