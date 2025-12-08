@@ -206,7 +206,7 @@ class PageManager:
                 insts.append((hot_inst, 'W' if random.random() < 0.5 else 'R'))
             else:
                 cold_inst = random.randint(40, 200) 
-                insts.append((cold_inst, 'W' if random.random() < 0.9 else 'R')) # 冷数据通常读多写少
+                insts.append((cold_inst, 'W' if random.random() < 0.1 else 'R')) # 冷数据通常读多写少
         
         return insts[:self.total_instructions]
 
