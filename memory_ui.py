@@ -137,6 +137,12 @@ class MemSimApp(App):
         self.plot_data_y = []
         self.mem_block_refs = []
 
+        self.algo_names = ["FIFO", "LRU", "OPT", "LINUX", "LINUX_NG"]
+        self.algo_histories = {
+            name: {'x': [], 'y': []} 
+            for name in self.algo_names
+        }
+
     def compose(self) -> ComposeResult:
         yield Label("Virtual Memory Simulator", classes="app-title")
         
@@ -311,8 +317,10 @@ class MemSimApp(App):
         btn.remove_class("pause")
 
     def reset_views(self):
-        self.plot_data_x = []
-        self.plot_data_y = []
+        # 重置所有算法的历史数据
+        for name in self.algo_names:
+            self.algo_histories[name] = {'x': [], 'y': []}
+
         self.refresh_chart()
         self.update_ui_reset()
 
@@ -321,8 +329,13 @@ class MemSimApp(App):
         plot_widget = self.query_one("#miss-chart-plot", PlotextPlot)
         plt = plot_widget.plt
         plt.clear_data()
-        if self.plot_data_x:
-            plt.plot(self.plot_data_x, self.plot_data_y, color="red", marker="dot")
+
+        current_algo = self.logic.view_algo_name
+        data = self.algo_histories.get(current_algo, {'x':[], 'y':[]})
+        
+        if data['x']:
+            plt.plot(data['x'], data['y'], color="red", marker="dot")
+
         plot_widget.refresh()
 
     def step_simulation(self):
@@ -330,36 +343,38 @@ class MemSimApp(App):
         if res is None:
             self._stop_simulation()
             self.query_one("#btn-start").label = "FINISHED"
+            self.query_one("#btn-start").remove_class("pause")
             
             # Belady 结果检查
             if self.logic.mode == "BELADY" and self.logic.view_algo_name == "FIFO":
                 misses = self.logic.algos["FIFO"].miss_count
                 self.query_one("#sys-log").write(f"[magenta]Result: {self.current_blocks} Blocks -> {misses} Misses[/]")
             return
-
+        
         # 1. 批量更新统计卡片
         current_algo_res = None
         for name, data in res["results"].items():
             card_id = f"#card-{name.lower().replace('+', 'p')}"
             try:
                 card = self.query_one(card_id, AlgoStatCard)
-                # 调用组件封装的方法更新数据
                 card.update_data(data['miss_rate'], data['wb_count'], data['status'])
             except:
                 pass
+
+            # === 并行记录每个算法的绘图数据 ===    
+            hist = self.algo_histories[name]
+            hist['x'].append(res['current_step'])
+            hist['y'].append(data['miss_rate'])
+             # 限制数据长度，防止无限增长
+            if len(hist['x']) > 60:
+                hist['x'].pop(0)
+                hist['y'].pop(0)
             
             if name == res["view_algo"]:
                 current_algo_res = data
 
-        # 2. 更新图表
-        if current_algo_res:
-            self.plot_data_x.append(res['current_step'])
-            self.plot_data_y.append(current_algo_res["miss_rate"])
-            # 保持图表窗口不无限增长
-            if len(self.plot_data_x) > 60:
-                self.plot_data_x.pop(0)
-                self.plot_data_y.pop(0)
-            self.refresh_chart()
+        # 2. 刷新图表 (显示当前选定算法的数据)
+        self.refresh_chart()
 
         # 3. 批量更新内存块 (调用组件封装的方法)
         victim_idx = res["next_victim"]
@@ -370,7 +385,6 @@ class MemSimApp(App):
             block = self.mem_block_refs[i]
             data = mem_data[i]
             is_victim = (i == victim_idx)
-            # 让 block 自己决定怎么显示
             block.update_state(i, data, is_victim, self.logic.view_algo_name)
 
         # 4. 打印日志
@@ -382,7 +396,7 @@ class MemSimApp(App):
         
         op_str = "[blue]WRITE[/]" if res["op"] == 'W' else "READ "
         msg = f"[{res['view_algo']}] {status_str} | {op_str} Pg {res['page']}"
-        
+
         if current_algo_res["swapped"] is not None:
             msg += f" -> Swap {current_algo_res['swapped']}"
             if current_algo_res["is_write_back"]:
