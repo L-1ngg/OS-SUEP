@@ -374,15 +374,20 @@ class MemSimApp(App):
             block.update_state(i, data, is_victim, self.logic.view_algo_name)
 
         # 4. 打印日志
+        status_str = ""
         if current_algo_res["status"] == "Miss":
-            op_str = "[blue]WRITE[/]" if res["op"] == 'W' else "READ"
-            status_str = f"[red]{current_algo_res['status']}[/]" 
-            msg = f"[{res['view_algo']}] {status_str} | {op_str} Pg {res['page']}"
-            if current_algo_res["swapped"] is not None:
-                msg += f" -> Swap {current_algo_res['swapped']}"
-                if current_algo_res["is_write_back"]:
-                    msg += " [bold yellow](WRITE BACK)[/]"
-            self.query_one("#sys-log").write(msg)
+            status_str = f"[red]Miss[/]"
+        else:
+            status_str = f"[green]HIT [/]"
+        
+        op_str = "[blue]WRITE[/]" if res["op"] == 'W' else "READ "
+        msg = f"[{res['view_algo']}] {status_str} | {op_str} Pg {res['page']}"
+        
+        if current_algo_res["swapped"] is not None:
+            msg += f" -> Swap {current_algo_res['swapped']}"
+            if current_algo_res["is_write_back"]:
+                msg += " [bold yellow](WRITE BACK)[/]"
+        self.query_one("#sys-log").write(msg)
 
 
     def update_ui_reset(self):
